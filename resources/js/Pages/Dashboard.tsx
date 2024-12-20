@@ -1,7 +1,8 @@
+import React from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 
-export default function Dashboard() {
+const Dashboard: React.FC = () => {
     return (
         <AuthenticatedLayout
             header={
@@ -23,4 +24,6 @@ export default function Dashboard() {
             </div>
         </AuthenticatedLayout>
     );
-}
+};
+
+export default Dashboard;

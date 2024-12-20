@@ -12,7 +12,11 @@
       "baseUrl": "./",
       "paths": {
         "@/*": ["resources/js/*"]
-      }
+      },
+      "typeRoots": [
+            "./node_modules/@types",
+            "./resources/js/types"  // Add this line
+        ]
     },
     "include": ["resources/js/**/*.ts", "resources/js/**/*.tsx", "resources/js/**/*.d.ts"]
   }

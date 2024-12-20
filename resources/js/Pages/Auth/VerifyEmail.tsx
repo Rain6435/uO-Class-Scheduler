@@ -1,11 +1,16 @@
+import React from 'react';
 import PrimaryButton from '@/Components/PrimaryButton';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 
-export default function VerifyEmail({ status }) {
+interface Props {
+    status?: string;
+}
+
+const VerifyEmail: React.FC<Props> = ({ status }) => {
     const { post, processing } = useForm({});
 
-    const submit = (e) => {
+    const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         post(route('verification.send'));
@@ -47,4 +52,6 @@ export default function VerifyEmail({ status }) {
             </form>
         </GuestLayout>
     );
-}
+};
+
+export default VerifyEmail;

@@ -1,3 +1,4 @@
+import React, { useRef, useState } from 'react';
 import DangerButton from '@/Components/DangerButton';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
@@ -5,11 +6,18 @@ import Modal from '@/Components/Modal';
 import SecondaryButton from '@/Components/SecondaryButton';
 import TextInput from '@/Components/TextInput';
 import { useForm } from '@inertiajs/react';
-import { useRef, useState } from 'react';
 
-export default function DeleteUserForm({ className = '' }) {
+interface Props {
+    className?: string;
+}
+
+interface FormData {
+    password: string;
+}
+
+const DeleteUserForm: React.FC<Props> = ({ className = '' }) => {
     const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
-    const passwordInput = useRef();
+    const passwordInput = useRef<HTMLInputElement>(null);
 
     const {
         data,
@@ -19,7 +27,7 @@ export default function DeleteUserForm({ className = '' }) {
         reset,
         errors,
         clearErrors,
-    } = useForm({
+    } = useForm<FormData>({
         password: '',
     });
 
@@ -27,20 +35,19 @@ export default function DeleteUserForm({ className = '' }) {
         setConfirmingUserDeletion(true);
     };
 
-    const deleteUser = (e) => {
+    const deleteUser = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         destroy(route('profile.destroy'), {
             preserveScroll: true,
             onSuccess: () => closeModal(),
-            onError: () => passwordInput.current.focus(),
+            onError: () => passwordInput.current?.focus(),
             onFinish: () => reset(),
         });
     };
 
     const closeModal = () => {
         setConfirmingUserDeletion(false);
-
         clearErrors();
         reset();
     };
@@ -90,7 +97,7 @@ export default function DeleteUserForm({ className = '' }) {
                             name="password"
                             ref={passwordInput}
                             value={data.password}
-                            onChange={(e) =>
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                                 setData('password', e.target.value)
                             }
                             className="mt-1 block w-3/4"
@@ -117,4 +124,6 @@ export default function DeleteUserForm({ className = '' }) {
             </Modal>
         </section>
     );
-}
+};
+
+export default DeleteUserForm;

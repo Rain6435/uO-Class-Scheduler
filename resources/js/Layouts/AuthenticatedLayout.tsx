@@ -1,15 +1,31 @@
+import React, { useState } from 'react';
+import { Link, usePage } from '@inertiajs/react';
+import { PageProps } from '@inertiajs/core';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { Link, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { route } from 'ziggy-js';
 
-export default function AuthenticatedLayout({ header, children }) {
-    const user = usePage().props.auth.user;
+interface User {
+    name: string;
+    email: string;
+}
 
-    const [showingNavigationDropdown, setShowingNavigationDropdown] =
-        useState(false);
+interface Props {
+    header?: React.ReactNode;
+    children: React.ReactNode;
+}
+
+interface PagePropsWithAuth extends PageProps {
+    auth: {
+        user: User;
+    };
+}
+
+const AuthenticatedLayout: React.FC<Props> = ({ header, children }) => {
+    const { auth: { user } } = usePage<PagePropsWithAuth>().props;
+    const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
     return (
         <div className="min-h-screen bg-gray-100">
@@ -173,4 +189,6 @@ export default function AuthenticatedLayout({ header, children }) {
             <main>{children}</main>
         </div>
     );
-}
+};
+
+export default AuthenticatedLayout;

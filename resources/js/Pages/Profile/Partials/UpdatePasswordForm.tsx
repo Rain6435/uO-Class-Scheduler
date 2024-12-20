@@ -1,14 +1,24 @@
+import React, { useRef } from 'react';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Transition } from '@headlessui/react';
 import { useForm } from '@inertiajs/react';
-import { useRef } from 'react';
 
-export default function UpdatePasswordForm({ className = '' }) {
-    const passwordInput = useRef();
-    const currentPasswordInput = useRef();
+interface Props {
+    className?: string;
+}
+
+interface FormData {
+    current_password: string;
+    password: string;
+    password_confirmation: string;
+}
+
+const UpdatePasswordForm: React.FC<Props> = ({ className = '' }) => {
+    const passwordInput = useRef<HTMLInputElement>(null);
+    const currentPasswordInput = useRef<HTMLInputElement>(null);
 
     const {
         data,
@@ -18,13 +28,13 @@ export default function UpdatePasswordForm({ className = '' }) {
         reset,
         processing,
         recentlySuccessful,
-    } = useForm({
+    } = useForm<FormData>({
         current_password: '',
         password: '',
         password_confirmation: '',
     });
 
-    const updatePassword = (e) => {
+    const updatePassword = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         put(route('password.update'), {
@@ -33,12 +43,12 @@ export default function UpdatePasswordForm({ className = '' }) {
             onError: (errors) => {
                 if (errors.password) {
                     reset('password', 'password_confirmation');
-                    passwordInput.current.focus();
+                    passwordInput.current?.focus();
                 }
 
                 if (errors.current_password) {
                     reset('current_password');
-                    currentPasswordInput.current.focus();
+                    currentPasswordInput.current?.focus();
                 }
             },
         });
@@ -68,7 +78,7 @@ export default function UpdatePasswordForm({ className = '' }) {
                         id="current_password"
                         ref={currentPasswordInput}
                         value={data.current_password}
-                        onChange={(e) =>
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                             setData('current_password', e.target.value)
                         }
                         type="password"
@@ -89,7 +99,9 @@ export default function UpdatePasswordForm({ className = '' }) {
                         id="password"
                         ref={passwordInput}
                         value={data.password}
-                        onChange={(e) => setData('password', e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setData('password', e.target.value)
+                        }
                         type="password"
                         className="mt-1 block w-full"
                         autoComplete="new-password"
@@ -107,7 +119,7 @@ export default function UpdatePasswordForm({ className = '' }) {
                     <TextInput
                         id="password_confirmation"
                         value={data.password_confirmation}
-                        onChange={(e) =>
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                             setData('password_confirmation', e.target.value)
                         }
                         type="password"
@@ -139,4 +151,6 @@ export default function UpdatePasswordForm({ className = '' }) {
             </form>
         </section>
     );
-}
+};
+
+export default UpdatePasswordForm;

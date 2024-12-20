@@ -1,15 +1,24 @@
+import React from 'react';
 import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, useForm } from '@inertiajs/react';
 
-export default function ForgotPassword({ status }) {
-    const { data, setData, post, processing, errors } = useForm({
+interface FormData {
+    email: string;
+}
+
+interface Props {
+    status?: string;
+}
+
+const ForgotPassword: React.FC<Props> = ({ status }) => {
+    const { data, setData, post, processing, errors } = useForm<FormData>({
         email: '',
     });
 
-    const submit = (e) => {
+    const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         post(route('password.email'));
@@ -39,7 +48,9 @@ export default function ForgotPassword({ status }) {
                     value={data.email}
                     className="mt-1 block w-full"
                     isFocused={true}
-                    onChange={(e) => setData('email', e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setData('email', e.target.value)
+                    }
                 />
 
                 <InputError message={errors.email} className="mt-2" />
@@ -52,4 +63,6 @@ export default function ForgotPassword({ status }) {
             </form>
         </GuestLayout>
     );
-}
+};
+
+export default ForgotPassword;

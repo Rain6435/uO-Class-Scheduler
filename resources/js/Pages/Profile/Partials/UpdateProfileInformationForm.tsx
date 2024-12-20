@@ -1,24 +1,49 @@
+import React from 'react';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Transition } from '@headlessui/react';
 import { Link, useForm, usePage } from '@inertiajs/react';
+import { PageProps } from '@inertiajs/core';
 
-export default function UpdateProfileInformation({
+interface User {
+    name: string;
+    email: string;
+    email_verified_at: string | null;
+}
+
+interface Props {
+    mustVerifyEmail: boolean;
+    status?: string;
+    className?: string;
+}
+
+interface FormData {
+    name: string;
+    email: string;
+}
+
+interface PagePropsWithAuth extends PageProps {
+    auth: {
+        user: User;
+    };
+}
+
+const UpdateProfileInformation: React.FC<Props> = ({
     mustVerifyEmail,
     status,
     className = '',
-}) {
-    const user = usePage().props.auth.user;
+}) => {
+    const user = usePage<PagePropsWithAuth>().props.auth.user;
 
     const { data, setData, patch, errors, processing, recentlySuccessful } =
-        useForm({
+        useForm<FormData>({
             name: user.name,
             email: user.email,
         });
 
-    const submit = (e) => {
+    const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         patch(route('profile.update'));
@@ -44,7 +69,9 @@ export default function UpdateProfileInformation({
                         id="name"
                         className="mt-1 block w-full"
                         value={data.name}
-                        onChange={(e) => setData('name', e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setData('name', e.target.value)
+                        }
                         required
                         isFocused
                         autoComplete="name"
@@ -61,7 +88,9 @@ export default function UpdateProfileInformation({
                         type="email"
                         className="mt-1 block w-full"
                         value={data.email}
-                        onChange={(e) => setData('email', e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setData('email', e.target.value)
+                        }
                         required
                         autoComplete="username"
                     />
@@ -110,4 +139,6 @@ export default function UpdateProfileInformation({
             </form>
         </section>
     );
-}
+};
+
+export default UpdateProfileInformation;
